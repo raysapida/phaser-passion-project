@@ -7,6 +7,7 @@ function preload() {
   game.load.image('star', 'assets/star.png');
   game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   game.load.spritesheet('ironman', 'assets/ironman.png', 32, 48, 16);
+  game.load.spritesheet('captainamerica', 'assets/captainamerica_shield.png', 32, 48, 16);
 
 }
 
@@ -49,7 +50,7 @@ function create() {
   ledge.body.immovable = true;
 
   // The player and its settings
-  player2 = game.add.sprite(32, game.world.height - 150, 'dude');
+  player2 = game.add.sprite(32, game.world.height - 150, 'captainamerica');
   player = game.add.sprite(32, game.world.height - 150, 'ironman');
 
   //  We need to enable physics on the player
@@ -67,8 +68,8 @@ function create() {
   //  Our two animations, walking left and right.
   player.animations.add('left', [4, 5, 6, 7], 10, true);
   player.animations.add('right', [8, 9, 10, 11], 10, true);
-  player2.animations.add('left', [0, 1, 2, 3], 10, true);
-  player2.animations.add('right', [5, 6, 7, 8], 10, true);
+  player2.animations.add('left', [4, 5, 6, 7], 10, true);
+  player2.animations.add('right', [8, 9, 10, 11], 10, true);
 
   //  Finally some stars to collect
   stars = game.add.group();
