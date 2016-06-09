@@ -42,7 +42,7 @@ function create() {
   ground.body.immovable = true;
 
   //  Now let's create two ledges
-  var ledge = platforms.create(400, 400, 'ground');
+  var ledge = platforms.create(400, 600, 'ground');
   ledge.body.immovable = true;
 
   ledge = platforms.create(-200, 250, 'ground');
@@ -51,9 +51,12 @@ function create() {
   ledge = platforms.create(500, 200, 'ground');
   ledge.body.immovable = true;
 
+  ledge = platforms.create(150, 400, 'ground');
+  ledge.body.immovable = true;
+
   // The player and its settings
-  player2 = game.add.sprite(32, game.world.height - 150, 'captainamerica');
-  player = game.add.sprite(32, game.world.height - 150, 'ironman');
+  player = game.add.sprite(768, game.world.height - 150, 'ironman');
+  player2 = game.add.sprite(100, game.world.height - 150, 'captainamerica');
 
   //  We need to enable physics on the player
   game.physics.arcade.enable(player);
@@ -80,10 +83,10 @@ function create() {
   stars.enableBody = true;
 
   //  Here we'll create 12 of them evenly spaced apart
-  for (var i = 0; i < 12; i++)
+  for (var i = 0; i < 30; i++)
   {
     //  Create a star inside of the 'stars' group
-    var star = stars.create(i * 70, 0, 'star');
+    var star = stars.create(i * 33, 0, 'star');
 
     //  Let gravity do its thing
     star.body.gravity.y = 300;
