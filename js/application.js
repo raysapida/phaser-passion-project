@@ -128,7 +128,19 @@ function update() {
   var leftA = game.input.keyboard.addKey(Phaser.Keyboard.A);
   var rightD = game.input.keyboard.addKey(Phaser.Keyboard.D);
 
-  if (leftA.isDown)
+  if (leftA.isDown && upW.isDown && player2.body.touching.down)
+  {
+    player2.body.velocity.x = -150;
+    player2.body.velocity.y = -350;
+    player2.animations.play('left');
+  }
+  else if (rightD.isDown && upW.isDown && player2.body.touching.down)
+  {
+    player2.body.velocity.x = 150;
+    player2.body.velocity.y = -350;
+    player2.animations.play('right');
+  }
+  else if (leftA.isDown)
   {
     player2.body.velocity.x = -150;
     player2.animations.play('left');
@@ -149,7 +161,19 @@ function update() {
     player2.frame = 0;
   }
 
-  if (cursors.left.isDown)
+  if (cursors.left.isDown && cursors.up.isDown && player.body.touching.down)
+  {
+    player.body.velocity.x = -150;
+    player.body.velocity.y = -350;
+    player.animations.play('left');
+  }
+  else if (cursors.right.isDown && cursors.up.isDown && player.body.touching.down)
+  {
+    player.body.velocity.x = 150;
+    player.body.velocity.y = -350;
+    player.animations.play('right');
+  }
+  else if (cursors.left.isDown)
   {
     player.body.velocity.x = -150;
     player.animations.play('left');
