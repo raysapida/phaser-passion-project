@@ -322,7 +322,6 @@ function fireBullet () {
         if (bullet2)
         {
           if (leftA.isDown){
-
             bullet2.reset(player2.x -30, player2.y +20 );
             bullet2.body.velocity.x = -400;
             bulletTime2 = game.time.now + 200;
@@ -372,8 +371,14 @@ function fireBullet () {
     if (bullets2.children.indexOf(bullet) > -1) {
       score2 += 10
       scoreText2.text = 'player 2 score: ' + score2;
+      if (score2 >= 500){
+        alert("player 2 won");
+      }
     } else {
       score += 10;
       scoreText.text = 'player 1 score: ' + score;
+       if (score>=500){
+        alert("player 1 won");
+      }
     }
   }
