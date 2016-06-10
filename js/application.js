@@ -5,7 +5,7 @@ function preload() {
   // game.load.image('sky', 'assets/sky.png');
   game.load.image('starfield', 'assets/starfield.jpg');
   game.load.image('bullet', 'assets/bullet.png');
-  game.load.image('bullet2', 'assets/star.png');
+  game.load.image('bullet2', 'assets/enemy-bullet.png');
   game.load.image('ground', 'assets/platform.jpg');
   game.load.image('star', 'assets/diamond.png');
   game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
@@ -50,7 +50,7 @@ function create() {
   bullets2 = game.add.group();
   bullets2.enableBody = true;
   bullets2.physicsBodyType = Phaser.Physics.ARCADE;
-  bullets2.createMultiple(30, 'bullet');
+  bullets2.createMultiple(30, 'bullet2');
   bullets2.setAll('anchor.x', 0.0);
   bullets2.setAll('anchor.y', 0.0);
   bullets2.setAll('outOfBoundsKill', true);
@@ -297,15 +297,13 @@ function fireBullet2 () {
         if (bullet2)
         {
             if (leftA.isDown){
-                        console.log('left')
 
-            bullet2.reset(player2.x -30, player2.y );
+            bullet2.reset(player2.x -30, player2.y +20 );
             bullet2.body.velocity.x = -400;
             bulletTime2 = game.time.now + 200;
             }else if(rightD.isDown){
 
-            console.log('right')
-            bullet2.reset(player2.x +30, player2.y );
+            bullet2.reset(player2.x +30, player2.y +20 );
             bullet2.body.velocity.x = 400;
             bulletTime2 = game.time.now + 200;
             }
