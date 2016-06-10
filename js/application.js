@@ -43,7 +43,10 @@ function create() {
   game.add.tileSprite(0, 0, 1000,800,'starfield');
   explosions = game.add.group();
   explosions.createMultiple(30, 'kaboom');
-  explosions.forEach(function(explosion) {explosion.animations.add('kaboom')}, this)
+  explosions.forEach(function(explosion) {
+
+    explosion.animations.add('kaboom');
+  }, this)
   //star.animations.add('kaboom', [0,1,2,3,4,5,6], 10, true);
 
 
@@ -131,17 +134,20 @@ function create() {
   stars.enableBody = true;
 
   //  Here we'll create 12 of them evenly spaced apart
-  for (var i = 0; i < 30; i++)
+  for (var i = 0; i < 99; i++)
   {
     //  Create a star inside of the 'stars' group
-    var star = stars.create(i * 33, 600 * Math.random(), 'star');
+    var star = stars.create(i * 10, 600 * Math.random(), 'star');
     star.animations.add('kaboom', [0,1,2,3,4,5,6], 10, true);
 
     //  Let gravity do its thing
-    star.body.gravity.y = 30 * Math.random();
+    star.body.gravity.y = 5 * Math.random();
 
     //  This just gives each star a slightly random bounce value
     star.body.bounce.y = 0.8 + Math.random() * 0.2;
+    star.body.bounce.x = 0.8 + Math.random() * 0.2;
+
+    star.body.collideWorldBounds = true;
   }
 
   //  The score
@@ -162,6 +168,9 @@ function update() {
   game.physics.arcade.collide(player, player2);
   game.physics.arcade.collide(player, stars);
   game.physics.arcade.collide(player2, stars);
+  game.physics.arcade.collide(stars, stars);
+
+
 
 
 
@@ -170,6 +179,9 @@ function update() {
   // game.physics.arcade.overlap(player2, stars, collectStar, null, this);
   game.physics.arcade.overlap(bullets, stars, collisionHandler, null, this);
   game.physics.arcade.overlap(bullets2, stars, collisionHandler, null, this);
+  game.physics.arcade.overlap(bullets2, player, playercollisionHandler, null, this);
+  game.physics.arcade.overlap(bullets, player2, playercollisionHandler, null, this);
+
 
 
   //  Reset the players velocity (movement)
@@ -185,14 +197,14 @@ function update() {
   rightD = game.input.keyboard.addKey(Phaser.Keyboard.D);
 
   if (fireButton.isDown)
-      {
-        fireBullet();
-      }
+  {
+    fireBullet();
+  }
 
   if (fireButton2.isDown)
-      {
-        fireBullet2();
-      }
+  {
+    fireBullet2();
+  }
 
   if (leftA.isDown && upW.isDown && player2.body.touching.down)
   {
@@ -275,22 +287,31 @@ function fireBullet () {
 
         if (bullet)
         {
-            if (cursors.left.isDown){
+          // var straightBullet = bullet
+          // straightBullet.angle +=90;
+          if (cursors.left.isDown){
+            bullet.angle = 0;
             bullet.reset(player.x -30, player.y );
             bullet.body.velocity.x = -400;
             bulletTime = game.time.now + 200;
-            }else if(cursors.right.isDown){
+          }else if(cursors.right.isDown){
+            bullet.angle = 0;
             bullet.reset(player.x +30, player.y );
             bullet.body.velocity.x = 400;
             bulletTime = game.time.now + 200;
-            }
+          } else {
+            bullet.angle = 90;
+            bullet.reset(player.x + 3, player.y -20 );
+            bullet.body.velocity.y = -400;
+            bulletTime = game.time.now + 200;
           }
         }
-
       }
 
+    }
 
-function fireBullet2 () {
+
+    function fireBullet2 () {
 
     //  To avoid them being allowed to fire too fast we set a time limit
     if (game.time.now > bulletTime2)
@@ -300,24 +321,28 @@ function fireBullet2 () {
 
         if (bullet2)
         {
-            if (leftA.isDown){
+          if (leftA.isDown){
 
             bullet2.reset(player2.x -30, player2.y +20 );
             bullet2.body.velocity.x = -400;
             bulletTime2 = game.time.now + 200;
-            }else if(rightD.isDown){
+          }else if(rightD.isDown){
 
             bullet2.reset(player2.x +30, player2.y +20 );
             bullet2.body.velocity.x = 400;
             bulletTime2 = game.time.now + 200;
-            }
-          }
-        }
+          } else {
+           bullet2.reset(player2.x + 14, player2.y );
+           bullet2.body.velocity.y = -400;
+           bulletTime2 = game.time.now + 200;
+         }
+       }
+     }
 
-      }
+   }
 
 
-function collisionHandler (bullet, star) {
+   function collisionHandler (bullet, star) {
 
     //  When a bullet hits an star we kill them both
     bullet.kill();
@@ -325,13 +350,30 @@ function collisionHandler (bullet, star) {
 
     //  And create an explosion :)
     var explosion = explosions.getFirstExists(false);
-    // explosion.play('kaboom', 30, false, true);
+    explosion.play('kaboom', 30, false, true);
     explosion.reset(star.body.x - 50, star.body.y - 50);
-  if (bullets2.children.indexOf(bullet) > -1) {
-    score2 += 10
-    scoreText2.text = 'player 2 score: ' + score2;
-  } else {
-    score += 10;
-    scoreText.text = 'player 1 score: ' + score;
+    if (bullets2.children.indexOf(bullet) > -1) {
+      score2 += 10
+      scoreText2.text = 'player 2 score: ' + score2;
+    } else {
+      score += 10;
+      scoreText.text = 'player 1 score: ' + score;
+    }
   }
-}
+
+  function playercollisionHandler (star, bullet) {
+
+    bullet.kill();
+
+    //  And create an explosion :)
+    var explosion = explosions.getFirstExists(false);
+    explosion.play('kaboom', 30, false, true);
+    explosion.reset(star.body.x - 50, star.body.y - 50);
+    if (bullets2.children.indexOf(bullet) > -1) {
+      score2 += 10
+      scoreText2.text = 'player 2 score: ' + score2;
+    } else {
+      score += 10;
+      scoreText.text = 'player 1 score: ' + score;
+    }
+  }
