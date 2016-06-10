@@ -9,6 +9,7 @@ function preload() {
   game.load.image('ground', 'assets/platform.jpg');
   game.load.image('star', 'assets/diamond.png');
   game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+  game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128, 7);
   game.load.spritesheet('ironman', 'assets/ironman.png', 32, 48, 16);
   game.load.spritesheet('captainamerica', 'assets/captainamerica_shield.png', 32, 48, 16);
 
@@ -33,8 +34,13 @@ var upW;
 var downS;
 var leftA;
 var rightD;
+var explosions;
 
 function create() {
+
+  // Explosions connected to
+  explosions = game.add.group();
+  explosions.createMultiple(30, 'kaboom');
 
 
   //  Our bullet group
@@ -125,6 +131,7 @@ function create() {
   {
     //  Create a star inside of the 'stars' group
     var star = stars.create(i * 33, 600 * Math.random(), 'star');
+    star.animations.add('kaboom', [0,1,2,3,4,5,6], 10, true);
 
     //  Let gravity do its thing
     star.body.gravity.y = 300* Math.random();
@@ -153,6 +160,9 @@ function update() {
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
   game.physics.arcade.overlap(player, stars, collectStar, null, this);
   game.physics.arcade.overlap(player2, stars, collectStar, null, this);
+  game.physics.arcade.overlap(bullets, stars, collisionHandler, null, this);
+  game.physics.arcade.overlap(bullets2, stars, collisionHandler, null, this);
+
 
   //  Reset the players velocity (movement)
   player.body.velocity.x = 0;
@@ -313,4 +323,15 @@ function fireBullet2 () {
       }
 
 
+function collisionHandler (bullet, star) {
 
+    //  When a bullet hits an star we kill them both
+    bullet.kill();
+    star.kill();
+
+    //  And create an explosion :)
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(star.body.x - 50, star.body.y - 50);
+    explosion.play('kaboom', 30, false, true);
+
+}
