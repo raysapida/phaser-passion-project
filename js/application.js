@@ -151,8 +151,8 @@ function create() {
   }
 
   //  The score
-  scoreText = game.add.text(16, 16, 'player 1 score: 0', { fontSize: '28px', fill: '#FFF' });
-  scoreText2 = game.add.text(16, 40, 'player 2 score: 0', { fontSize: '28px', fill: '#FFF' });
+  scoreText = game.add.text(16, 16, 'player1 score: 0', { fontSize: '20px', fill: '#FFF' });
+  scoreText2 = game.add.text(16, 40, 'player2 score: 0', { fontSize: '20px', fill: '#FFF' });
 
   //  Our controls.
   cursors = game.input.keyboard.createCursorKeys();
