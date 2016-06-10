@@ -7,9 +7,10 @@ function preload() {
   game.load.image('bullet', 'assets/bullet.png');
   game.load.image('bullet2', 'assets/enemy-bullet.png');
   game.load.image('ground', 'assets/platform.jpg');
-  game.load.image('star', 'assets/diamond.png');
+  // game.load.image('star', 'assets/diamond.png');
   game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-  game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128, 7);
+  game.load.spritesheet('star', 'assets/chick.png', 18, 18);
+  game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128, 10);
   game.load.spritesheet('ironman', 'assets/ironman.png', 32, 48, 16);
   game.load.spritesheet('captainamerica', 'assets/captainamerica_shield.png', 32, 48, 16);
 
@@ -39,8 +40,12 @@ var explosions;
 function create() {
 
   // Explosions connected to
+  game.add.tileSprite(0, 0, 1000,800,'starfield');
   explosions = game.add.group();
   explosions.createMultiple(30, 'kaboom');
+  explosions.forEach(function(explosion) {explosion.animations.add('kaboom')}, this)
+  //star.animations.add('kaboom', [0,1,2,3,4,5,6], 10, true);
+
 
 
   //  Our bullet group
@@ -64,7 +69,6 @@ function create() {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
   //game.stage.backgroundColor = "#4488AA";
-  //game.add.tileSprite(0, 0, 1000,800,'starfield');
 
   //game.add.sprite(0, 0, 'sky');
 
@@ -85,17 +89,17 @@ function create() {
   ground.body.immovable = true;
 
   //  Now let's create two ledges
-  var ledge = platforms.create(400, 600, 'ground');
-  ledge.body.immovable = true;
+  // var ledge = platforms.create(400, 600, 'ground');
+  // ledge.body.immovable = true;
 
-  ledge = platforms.create(-200, 250, 'ground');
-  ledge.body.immovable = true;
+  // ledge = platforms.create(-200, 250, 'ground');
+  // ledge.body.immovable = true;
 
-  ledge = platforms.create(500, 200, 'ground');
-  ledge.body.immovable = true;
+  // ledge = platforms.create(500, 200, 'ground');
+  // ledge.body.immovable = true;
 
-  ledge = platforms.create(150, 400, 'ground');
-  ledge.body.immovable = true;
+  // ledge = platforms.create(150, 400, 'ground');
+  // ledge.body.immovable = true;
 
   // The player and its settings
   player = game.add.sprite(768, game.world.height - 150, 'ironman');
@@ -134,7 +138,7 @@ function create() {
     star.animations.add('kaboom', [0,1,2,3,4,5,6], 10, true);
 
     //  Let gravity do its thing
-    star.body.gravity.y = 300* Math.random();
+    star.body.gravity.y = 30 * Math.random();
 
     //  This just gives each star a slightly random bounce value
     star.body.bounce.y = 0.8 + Math.random() * 0.2;
@@ -156,10 +160,14 @@ function update() {
   game.physics.arcade.collide(player2, platforms);
   game.physics.arcade.collide(stars, platforms);
   game.physics.arcade.collide(player, player2);
+  game.physics.arcade.collide(player, stars);
+  game.physics.arcade.collide(player2, stars);
+
+
 
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-  game.physics.arcade.overlap(player, stars, collectStar, null, this);
-  game.physics.arcade.overlap(player2, stars, collectStar, null, this);
+  // game.physics.arcade.overlap(player, stars, collectStar, null, this);
+  // game.physics.arcade.overlap(player2, stars, collectStar, null, this);
   game.physics.arcade.overlap(bullets, stars, collisionHandler, null, this);
   game.physics.arcade.overlap(bullets2, stars, collisionHandler, null, this);
 
@@ -255,20 +263,6 @@ function update() {
 
 }
 
-function collectStar (player, star) {
-
-  // Removes the star from the screen
-  star.kill();
-
-  //  Add and update the score
-  if (player == player2) {
-    score2 += 10
-    scoreText2.text = 'player 2 score: ' + score2;
-  } else {
-    score += 10;
-    scoreText.text = 'player 1 score: ' + score;
-  }
-}
 
 function fireBullet () {
 
@@ -331,7 +325,13 @@ function collisionHandler (bullet, star) {
 
     //  And create an explosion :)
     var explosion = explosions.getFirstExists(false);
+    // explosion.play('kaboom', 30, false, true);
     explosion.reset(star.body.x - 50, star.body.y - 50);
-    explosion.play('kaboom', 30, false, true);
-
+  if (bullets2.children.indexOf(bullet) > -1) {
+    score2 += 10
+    scoreText2.text = 'player 2 score: ' + score2;
+  } else {
+    score += 10;
+    scoreText.text = 'player 1 score: ' + score;
+  }
 }
