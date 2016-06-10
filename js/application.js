@@ -2,9 +2,11 @@ var game = new Phaser.Game(1000, 800, Phaser.AUTO, '', { preload: preload, creat
 
 function preload() {
 
-  game.load.image('sky', 'assets/sky.png');
-  game.load.image('ground', 'assets/platform.png');
-  game.load.image('star', 'assets/star.png');
+  // game.load.image('sky', 'assets/sky.png');
+  game.load.image('starfield', 'assets/starfield.jpg');
+
+  game.load.image('ground', 'assets/platform.jpg');
+  game.load.image('star', 'assets/diamond.png');
   game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
   game.load.spritesheet('ironman', 'assets/ironman.png', 32, 48, 16);
   game.load.spritesheet('captainamerica', 'assets/captainamerica_shield.png', 32, 48, 16);
@@ -24,6 +26,8 @@ var scoreText2;
 function create() {
   game.physics.startSystem(Phaser.Physics.ARCADE);
   game.stage.backgroundColor = "#4488AA";
+  game.add.tileSprite(0, 0, 1000,800,'starfield');
+
   //game.add.sprite(0, 0, 'sky');
 
   //  The platforms group contains the ground and the 2 ledges we can jump on
@@ -37,6 +41,7 @@ function create() {
 
   //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
   ground.scale.setTo(4, 4);
+
 
   //  This stops it from falling away when you jump on it
   ground.body.immovable = true;
@@ -86,18 +91,18 @@ function create() {
   for (var i = 0; i < 30; i++)
   {
     //  Create a star inside of the 'stars' group
-    var star = stars.create(i * 33, 0, 'star');
+    var star = stars.create(i * 33, 600 * Math.random(), 'star');
 
     //  Let gravity do its thing
-    star.body.gravity.y = 300;
+    star.body.gravity.y = 300* Math.random();
 
     //  This just gives each star a slightly random bounce value
-    star.body.bounce.y = 0.7 + Math.random() * 0.2;
+    star.body.bounce.y = 0.8 + Math.random() * 0.2;
   }
 
   //  The score
-  scoreText = game.add.text(16, 16, 'player 1 score: 0', { fontSize: '28px', fill: '#000' });
-  scoreText2 = game.add.text(16, 40, 'player 2 score: 0', { fontSize: '28px', fill: '#000' });
+  scoreText = game.add.text(16, 16, 'player 1 score: 0', { fontSize: '28px', fill: '#FFF' });
+  scoreText2 = game.add.text(16, 40, 'player 2 score: 0', { fontSize: '28px', fill: '#FFF' });
 
   //  Our controls.
   cursors = game.input.keyboard.createCursorKeys();
@@ -205,9 +210,9 @@ function collectStar (player, star) {
   //  Add and update the score
   if (player == player2) {
     score2 += 10
-    scoreText2.text = 'Player 2 Score: ' + score2;
+    scoreText2.text = 'player 2 score: ' + score2;
   } else {
     score += 10;
-    scoreText.text = 'Player 1 Score: ' + score;
+    scoreText.text = 'player 1 score: ' + score;
   }
 }
