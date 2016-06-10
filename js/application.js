@@ -4,7 +4,8 @@ function preload() {
 
   // game.load.image('sky', 'assets/sky.png');
   game.load.image('starfield', 'assets/starfield.jpg');
-
+  game.load.image('bullet', 'assets/bullet.png');
+  game.load.image('bullet2', 'assets/star.png');
   game.load.image('ground', 'assets/platform.jpg');
   game.load.image('star', 'assets/diamond.png');
   game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
@@ -16,6 +17,8 @@ function preload() {
 var player;
 var platforms;
 var cursors;
+var bulletTime = 0;
+var bulletTime2 = 0;
 
 var stars;
 var score = 0;
@@ -23,10 +26,39 @@ var score2 = 0;
 var scoreText;
 var scoreText2;
 
+var bullets;
+var bullets2;
+
+var upW;
+var downS;
+var leftA;
+var rightD;
+
 function create() {
+
+
+  //  Our bullet group
+  bullets = game.add.group();
+  bullets.enableBody = true;
+  bullets.physicsBodyType = Phaser.Physics.ARCADE;
+  bullets.createMultiple(30, 'bullet');
+  bullets.setAll('anchor.x', 0.0);
+  bullets.setAll('anchor.y', 0.0);
+  bullets.setAll('outOfBoundsKill', true);
+  bullets.setAll('checkWorldBounds', true);
+
+  bullets2 = game.add.group();
+  bullets2.enableBody = true;
+  bullets2.physicsBodyType = Phaser.Physics.ARCADE;
+  bullets2.createMultiple(30, 'bullet');
+  bullets2.setAll('anchor.x', 0.0);
+  bullets2.setAll('anchor.y', 0.0);
+  bullets2.setAll('outOfBoundsKill', true);
+  bullets2.setAll('checkWorldBounds', true);
+
   game.physics.startSystem(Phaser.Physics.ARCADE);
-  game.stage.backgroundColor = "#4488AA";
-  game.add.tileSprite(0, 0, 1000,800,'starfield');
+  //game.stage.backgroundColor = "#4488AA";
+  //game.add.tileSprite(0, 0, 1000,800,'starfield');
 
   //game.add.sprite(0, 0, 'sky');
 
@@ -68,6 +100,7 @@ function create() {
   game.physics.arcade.enable(player2);
 
   //  Player physics properties. Give the little guy a slight bounce.
+  player.anchor.setTo(0.5, 0.5);
   player.body.bounce.y = 0.2;
   player.body.gravity.y = 300;
   player.body.collideWorldBounds = true;
@@ -125,13 +158,23 @@ function update() {
   player.body.velocity.x = 0;
   player2.body.velocity.x = 0;
 
-  //this.cursors = game.input.keyboard.createCursorKeys();
-  //console.log(this);
+  var fireButton = game.input.keyboard.addKey(Phaser.Keyboard.ALT);
+  var fireButton2 = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-  var upW = game.input.keyboard.addKey(Phaser.Keyboard.W);
-  var downS = game.input.keyboard.addKey(Phaser.Keyboard.S);
-  var leftA = game.input.keyboard.addKey(Phaser.Keyboard.A);
-  var rightD = game.input.keyboard.addKey(Phaser.Keyboard.D);
+  upW = game.input.keyboard.addKey(Phaser.Keyboard.W);
+  downS = game.input.keyboard.addKey(Phaser.Keyboard.S);
+  leftA = game.input.keyboard.addKey(Phaser.Keyboard.A);
+  rightD = game.input.keyboard.addKey(Phaser.Keyboard.D);
+
+  if (fireButton.isDown)
+      {
+        fireBullet();
+      }
+
+  if (fireButton2.isDown)
+      {
+        fireBullet2();
+      }
 
   if (leftA.isDown && upW.isDown && player2.body.touching.down)
   {
@@ -216,3 +259,60 @@ function collectStar (player, star) {
     scoreText.text = 'player 1 score: ' + score;
   }
 }
+
+function fireBullet () {
+
+    //  To avoid them being allowed to fire too fast we set a time limit
+    if (game.time.now > bulletTime)
+    {
+
+        //  Grab the first bullet we can from the pool
+        bullet = bullets.getFirstExists(false);
+
+        if (bullet)
+        {
+            if (cursors.left.isDown){
+            bullet.reset(player.x -30, player.y );
+            bullet.body.velocity.x = -400;
+            bulletTime = game.time.now + 200;
+            }else if(cursors.right.isDown){
+            bullet.reset(player.x +30, player.y );
+            bullet.body.velocity.x = 400;
+            bulletTime = game.time.now + 200;
+            }
+          }
+        }
+
+      }
+
+
+function fireBullet2 () {
+
+    //  To avoid them being allowed to fire too fast we set a time limit
+    if (game.time.now > bulletTime2)
+    {
+        //  Grab the first bullet we can from the pool
+        bullet2 = bullets2.getFirstExists(false);
+
+        if (bullet2)
+        {
+            if (leftA.isDown){
+                        console.log('left')
+
+            bullet2.reset(player2.x -30, player2.y );
+            bullet2.body.velocity.x = -400;
+            bulletTime2 = game.time.now + 200;
+            }else if(rightD.isDown){
+
+            console.log('right')
+            bullet2.reset(player2.x +30, player2.y );
+            bullet2.body.velocity.x = 400;
+            bulletTime2 = game.time.now + 200;
+            }
+          }
+        }
+
+      }
+
+
+
